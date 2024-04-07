@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
+    <style>
+        <?php include "../../assets/css/style.css"; ?>
+    </style>
+    <title>About page</title>
+</head>
+
+<body>
+    <?php include "../components/_header.php"; ?>
+
+    <section class="sign-board">
+        <div class="about-content">
+
+            <h1>About us</h1>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Cumque, saepe molestias eveniet minima odio
+                voluptates suscipit, exercitationem quis dolor voluptatum accusamus delectus! Quas deserunt eius nisi,
+                odit ad delectus dignissimos ipsum itaque consequuntur hic sit nostrum, beatae quam consequatur magni
+                asperiores non consectetur quis vero, veritatis error rem facilis. Vitae molestiae, neque blanditiis
+                provident deserunt error enim? Obcaecati deleniti labore, consequuntur magni assumenda officia itaque
+                cupiditate impedit nihil laborum maiores quia suscipit enim vel tempora illum ex dicta velit inventore
+                autem voluptatum. Perferendis unde cumque est quo. Facilis earum sint doloremque hic error quaerat
+                aspernatur molestiae cupiditate, exercitationem minima possimus quis laudantium deserunt, ipsum quasi
+                molestias amet nihil quod quas cum atque dolor enim officiis totam! Dignissimos debitis ratione at quae
+                neque ducimus sed atque doloribus quo architecto odit, id saepe cumque numquam vero, rem quia commodi.
+                Quisquam, ab quo.</p>
+        </div>
+    </section>
+
+    <section class="about-detail">
+        <div class="about-img">
+            <img src="../../assets/imgs/img1.jpg" alt="banner image">
+        </div>
+        <div class="about-desc">
+            <h1>Our Vision</h1>
+            <p>we have some agenda with our ecommerce platform</p>
+            <ul>
+                <li>this is shit</li>
+                <li>booooooo</li>
+                <li>fuck u</li>
+                <li>beach dont kill my vibe</li>
+                <li>kick rocks motherfucker</li>
+                <li>get your dick together</li>
+            </ul>
+        </div>
+    </section>
+
+
+
+    <?php include "../components/_footer.php"; ?>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
+    <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
+    <script>
+        <?php include "../../view/js/script.js"; ?>
+
+    </script>
+</body>
+
+</html>
