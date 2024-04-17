@@ -37,3 +37,12 @@ function prevSlide(){
 }
 setInterval(nextSlide, 5000);
 showSlides();
+
+
+
+function closeLabel() {
+    var label = document.querySelector('.label-container');
+    label.style.display = 'none';
+}
+
+ 

@@ -144,7 +144,7 @@ if (isset($_POST['empty_cart'])) {
 
 <body>
     <?php include "../components/_header.php"; ?>
-
+    <?php require("../components/alert.php"); ?>
     <section class="sign-board">
         <div class="about-content">
 
@@ -248,7 +248,7 @@ if (isset($_POST['empty_cart'])) {
 
     </section>
     <?php include "../components/_footer.php"; ?>
-    <?php include "../components/alert.php"; ?>
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
     <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
     <script>

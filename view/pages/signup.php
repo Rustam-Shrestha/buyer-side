@@ -1,6 +1,4 @@
 <?php
-include "../components/_header.php";
-include "../components/connection.php";
 session_start();
 
 // initializing message array
@@ -10,6 +8,10 @@ if (isset($_SESSION['user_id'])) {
 } else {
     $user_id = "";
 }
+include "../components/connection.php";
+include "../components/_header.php";
+
+ include "../components/alert.php"; 
 
 // registering user
 if (isset($_POST['submit'])) {

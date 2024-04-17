@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        background-color: #f0f0f0;
+    }
+
+    .label-container {
+        width: 80%;
+        background-color: #e0e0e0;
+        padding: 10px 20px;
+        border-radius: 5px;
+        display: flex;
+        align-items: center;
+    }
+
+    .message {
+        margin-right: auto;
+        margin-left: 10px;
+        color: #333;
+    }
+
+    .close-btn {
+        cursor: pointer;
+        color: #999;
+    }
+
+    .close-btn:hover {
+        color: #666;
+    }
+</style>
+<title>Cancellable Label</title>
+</head>
+<body>
+
+<div class="label-container">
+    <span class="message">Your message here</span>
+    <span class="close-btn" onclick="closeLabel()">&times;</span>
+</div>
+
+<script>
+    function closeLabel() {
+        var label = document.querySelector('.label-container');
+        label.style.display = 'none';
+    }
+</script>
+</body>
+</html>

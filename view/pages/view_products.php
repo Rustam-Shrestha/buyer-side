@@ -1,9 +1,9 @@
 <?php
     include "../components/connection.php";
     
-// session checkpoint
+    // session checkpoint
     session_start();
-if (isset ($_SESSION['user_id'])) {
+    if (isset ($_SESSION['user_id'])) {
     $user_id = $_SESSION['user_id'];
 } else {
     $user_id = "";
@@ -46,10 +46,10 @@ if (isset ($_POST['add_to_cart'])) {
     $product_id = $_POST['product_id'];
     $qty = $_POST['qty'];
     $qty = filter_var($qty, FILTER_SANITIZE_NUMBER_INT);
-
+    
     $verify_cart = $con->prepare('SELECT * FROM `cart` WHERE user_id = ? AND product_id = ?');
     $verify_cart->execute([$user_id, $product_id]);
-
+    
     $max_cart_items = $con->prepare("SELECT * FROM `cart` WHERE user_id=? ");
     $max_cart_items->execute([$user_id]);
     if ($verify_cart->rowCount() > 0) {
@@ -57,7 +57,7 @@ if (isset ($_POST['add_to_cart'])) {
 
     } else if ($max_cart_items->rowCount() > 20) {
         $warning_msg[] = 'cart is already full';
-
+        
     } else {
         $select_price = $con->prepare("SELECT * FROM `products` WHERE id= ? LIMIT 1");
         $select_price->execute([$product_id]);
@@ -71,9 +71,9 @@ if (isset ($_POST['add_to_cart'])) {
 ?>
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
+    
+    <head>
+        <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
@@ -87,16 +87,17 @@ if (isset ($_POST['add_to_cart'])) {
 
 <body>
     <?php include "../components/_header.php"; ?>
-
+    <?php require("../components/alert.php"); ?>
+    
     <section class="sign-board">
         <h1>All products</h1>
         <strong><a style="color:inherit" href="home.php">HOME</a>&nbsp; &nbsp;/PRODUCTS</strong>
     </section>
-
-<!-- filter container -->
+    
+    <!-- filter container -->
     <div class="container">
 
-  <div class="category-box">All</div>
+        <div class="category-box">All</div>
   <div class="category-box">Berries</div>
   <div class="category-box">Drupes</div>
   <div class="category-box">Pomes</div>
@@ -135,7 +136,7 @@ if (isset ($_POST['add_to_cart'])) {
                                 <p class="price">price:
                                     Rs.
                                     <?= $fetch_products['price']; ?>/-
-                                    <input type="number" name="qty" required value="1" min="1" max="99" maxlength="2" class="qty">
+                                    <input class="btn" type="number" name="qty" required value="1" min="1" max="99" maxlength="2" class="qty">
                                 </p>
                             </div>
                             <br>
@@ -173,7 +174,6 @@ if (isset ($_POST['add_to_cart'])) {
     
     </section>
     <?php include "../components/_footer.php"; ?>
-    <?php include "../components/alert.php"; ?>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
     <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
     <script>

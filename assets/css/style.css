@@ -461,8 +461,8 @@ body {
   top: 2%;
   right: 20%;
   z-index: 9999;
-  background: var(--black); /* semi-transparent background */
-  padding: 80px;
+  background: var(--brown); /* semi-transparent background */
+  padding: 100px;
   display: none;
   transition:.5s;
 }
@@ -517,3 +517,38 @@ body {
   padding: 9px;
   margin: 28px 0;
 }
+
+/* cancellable lable */
+
+
+
+
+.label-container {
+  width: 80%;
+  margin: 0 auto;
+  padding: 12px 0;
+  display: flex;
+  justify-content: space-between;
+
+}
+
+.message {
+  margin-right: auto;
+  margin-left: 10px;
+  color: var(--black);
+  font-size: 21px;
+  font-weight: 400;
+  
+}
+
+.close-btn {
+  cursor: pointer;
+  font-size: 24px;
+  font-weight: 400;
+  color: var(--black)
+}
+
+.close-btn:hover {
+  color: #666;
+}
+
