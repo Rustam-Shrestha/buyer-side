@@ -1,3 +1,16 @@
+
+<?php
+include "../components/connection.php";
+
+session_start();
+if (isset($_SESSION['user_id'])) {
+    $user_id = $_SESSION['user_id'];
+} else {
+    $user_id = "";
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -42,12 +55,10 @@
             <h1>Our Vision</h1>
             <p>we have some agenda with our ecommerce platform</p>
             <ul>
-                <li>this is shit</li>
-                <li>booooooo</li>
-                <li>fuck u</li>
-                <li>beach dont kill my vibe</li>
-                <li>kick rocks motherfucker</li>
-                <li>get your dick together</li>
+           <li>affordable products</li>
+           <li>b2b and b2c</li>
+           <li>247 support</li>
+           <li>service oriented</li>
             </ul>
         </div>
     </section>
@@ -55,6 +66,7 @@
 
 
     <?php include "../components/_footer.php"; ?>
+    <?php include "../components/alert.php"; ?>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
     <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
     <script>

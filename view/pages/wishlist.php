@@ -10,8 +10,7 @@
     <style>
         <?php include "../../assets/css/style.css"; ?>
         :root {
-  --green: rgb(1, 171, 171);
-}
+            --green: rgba(19, 78, 0, 0.956);
         .wishlists{
             display:flex;
             justify-content: center;

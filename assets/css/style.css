@@ -1,10 +1,11 @@
 * {
   margin: 0;
   padding: 0;
+  text-decoration: none;
 }
 /* all the styling done in variable */
 :root {
-  --green: rgb(1, 171, 171);
+  --green: rgba(19, 78, 0, 0.956);
   --white: #fff;
   --black: #000;
   --brown: #2c0505;
@@ -35,6 +36,7 @@ body {
   height: 4em;
   display: flex;
   justify-content: space-evenly;
+  font-size: 20px;
 }
 /* positioning of navbar */
 .nav-container,
@@ -62,6 +64,13 @@ body {
 }
 .header .icons {
   display: none;
+  color: var(--white);
+}
+.wildcard-icons>*{
+  color: var(--white);
+  font-weight: 900;
+  font-size: 22px;
+  margin: 0 0 0 11px;
 }
 /* navigation styling ends==========+================*/
 /* ==================================================== */
@@ -110,7 +119,7 @@ body {
 /* navigation styling ends==========+================*/
 /* ==================================================== */
 
-@media screen and (max-width: 720px) {
+@media screen and (max-width: 820px) {
   .carousel img {
     width:100%;
     height: auto;
@@ -263,7 +272,7 @@ body {
   margin: 14px 17px;
 }
 .trending-item:hover{
-  box-shadow: 3px 4px 6px  var(--brown   );
+  box-shadow: 3px 4px 6px  var(--brown );
   cursor: pointer;
   transition: .7s;
   transform: scale(105%);
@@ -444,4 +453,67 @@ body {
 }
 .about-desc .btn, .about-desc  p{
   line-height: 4 ;
+}
+
+
+.modal {
+  position: fixed;
+  top: 2%;
+  right: 20%;
+  z-index: 9999;
+  background: var(--black); /* semi-transparent background */
+  padding: 80px;
+  display: none;
+  transition:.5s;
+}
+
+.modal p {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 24px;
+  color: tomato;
+  cursor: pointer;
+  padding: 4px;
+  border:1px solid tomato;
+}
+/* p:hover{
+  color: var(--white);
+  background-color: tomato;
+  border:1px solid var(--white);
+
+} */
+
+
+.blob{
+  padding: 4px;
+  border-radius: 50%;
+  background-color: var(--brown);
+}
+.carts .box-container{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.box-container .item{
+  height:400px;
+}
+
+.summary-buttons{
+  display: flex; 
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin: 9px 0 ;
+  border: 3px solid var(--brown);
+  border-radius: 18px;
+}
+
+.empty{
+  color: var(--white);
+  background: var(--green);
+  padding: 9px;
+  margin: 28px 0;
 }

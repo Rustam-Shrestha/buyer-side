@@ -1,6 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
-
+<?php 
+    include "../components/connection.php";
+        session_start();
+    if (isset($_SESSION['user_id'])) {
+        $user_id = $_SESSION['user_id'];
+    } else {
+        $user_id = "";
+    }
+    if (isset($_POST['logout'])) {
+        session_destroy();
+        header("location: login.php");
+    }
+    ?>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,8 +26,10 @@
 </head>
 
 <body>
-    <?php include "../components/_header.php"; ?>
-
+   <?php
+    include "../components/_header.php"; 
+    ?>
+    
     <div class="wallpaper">
         <div class="carousel-container">
             <button class="carousel-btn-prev carousel-btn" onclick="prevSlide()">
@@ -125,6 +139,7 @@
 
     </section>
     <?php include "../components/_footer.php"; ?>
+    <?php include "../components/alert.php"; ?>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
     <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
     <script>
