@@ -396,6 +396,7 @@ body {
   background-color: var(--green);
   font-size: 18px;
   transition: .5s;
+  cursor: pointer;
 }
 
 
@@ -419,7 +420,7 @@ body {
 /* ------------------------- */
 
 
-.about-content{
+.about-content, .banner{
   width: 80%;
   margin: 0 auto;
   text-align: center;
@@ -550,5 +551,6 @@ body {
 
 .close-btn:hover {
   color: #666;
+  
 }
 

@@ -1,9 +1,11 @@
-
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
 session_start();
+
+// Redirect to home page if user is already logged in
+if (isset($_SESSION['user_id']) && $_SESSION['user_id'] != "") {
+    header('Location: home.php?logout=1');
+    exit();
+}
 
 // initializing message array
 // setting session if set or else set empty item
@@ -12,39 +14,47 @@ if (isset($_SESSION['user_id'])) {
 } else {
     $user_id = "";
 }
-include "../components/connection.php";
 
- include "../components/_header.php";
+include "../components/connection.php";
+include "../components/_header.php";
 
 if (isset($_POST['submit'])) {
-
     $email = $_POST['email'];
     $pass = $_POST['pass'];
-    
-    $query = "SELECT * FROM `users` WHERE email= ? AND password= ?";
-    $select_user = $con->prepare($query);
-    $select_user->execute([$email, $pass]);
-    $row = $select_user->fetch(PDO::FETCH_ASSOC);
-  
-    if ($select_user->rowCount() > 0) {
-        $_SESSION['user_id'] = $row["id"];
-        $_SESSION['user_name'] = $row["name"];
-        $_SESSION['user_email'] = $row["email"];
-        echo "<script>
-                alert('Welcome back mr/ms. " . $_SESSION['user_name'] . "');
-                setTimeout(function() {
-                    window.location.href = 'home.php';
-                }, 4000); // 4 seconds delay
-              </script>";
-    } else {
-        $error_msg[] = "Incorrect username and password";
-    }
 
-    
-    
+    // Check if email and password are not empty
+    if (!empty($email) && !empty($pass)) {
+        $query = "SELECT * FROM `users` WHERE email= ? AND password= ?";
+        $select_user = $con->prepare($query);
+        $select_user->execute([$email, $pass]);
+        $row = $select_user->fetch(PDO::FETCH_ASSOC);
+
+        if ($select_user->rowCount() > 0) {
+            $_SESSION['user_id'] = $row["id"];
+            $_SESSION['user_name'] = $row["name"];
+            $_SESSION['user_email'] = $row["email"];
+            echo "<script>
+                    alert('Welcome back Mr./Ms. " . $_SESSION['user_name'] . "');
+                    setTimeout(function() {
+                        window.location.href = 'home.php';
+                    }, 4000); // 4 seconds delay
+                  </script>";
+        } else {
+            $error_msg[] = "Incorrect username and password";
+        }
+    } else {
+        $error_msg[] = "Email and password cannot be empty";
+    }
 }
 
 
+// getting user a bad attempt message
+if (isset($_GET['attempt']) && $_GET['attempt'] == '1') {
+    $warning_msg[] = 'You need to login first';
+}
+if (isset($_GET['logout']) && $_GET['logout'] == '1') {
+    $info_msg[] = 'you logged out of our system';
+}
 ?>
 
 <?php require("../components/alert.php"); ?>

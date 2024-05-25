@@ -68,6 +68,11 @@ if (isset ($_POST['add_to_cart'])) {
     }
 }
 
+if (!isset($_SESSION['user_id']) || $_SESSION['user_id'] == "") {
+    header('Location: login.php?attempt=1');
+    exit();
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -87,12 +92,12 @@ if (isset ($_POST['add_to_cart'])) {
 
 <body>
     <?php include "../components/_header.php"; ?>
-    <?php require("../components/alert.php"); ?>
     
     <section class="sign-board">
         <h1>All products</h1>
         <strong><a style="color:inherit" href="home.php">HOME</a>&nbsp; &nbsp;/PRODUCTS</strong>
     </section>
+    <?php require("../components/alert.php"); ?>
     
     <!-- filter container -->
     <div class="container">

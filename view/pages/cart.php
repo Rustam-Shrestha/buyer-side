@@ -12,7 +12,7 @@ if (isset($_SESSION['user_id'])) {
 // logging out user
 if (isset($_POST['logout'])) {
     session_destroy();
-    header("location: login.php");
+    header("location: login.php?logout=1");
 }
 
 // adding a product in wishlist
@@ -91,6 +91,11 @@ if (isset($_POST['empty_cart'])) {
     } else {
         $error_msg[] = "Error emptying cart item ";
     }
+}
+
+if (!isset($_SESSION['user_id']) || $_SESSION['user_id'] == "") {
+    header('Location: login.php?attempt=1');
+    exit();
 }
 
 ?>

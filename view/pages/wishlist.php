@@ -79,6 +79,12 @@ if (isset($_POST['delete_item'])) {
 
 }
 
+
+if (!isset($_SESSION['user_id']) || $_SESSION['user_id'] == "") {
+    header('Location: login.php?attempt=1');
+    exit();
+}
+
 ?>
 
 <!DOCTYPE html>

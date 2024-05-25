@@ -10,7 +10,10 @@ if (isset ($_POST['logout'])) {
     session_destroy();
     header("location: login.php");
 }
-
+if (!isset($_SESSION['user_id']) || $_SESSION['user_id'] == "") {
+    header('Location: login.php?attempt=1');
+    exit();
+}
 
 ?>
 

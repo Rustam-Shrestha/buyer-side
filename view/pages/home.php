@@ -10,7 +10,7 @@
     }
     if (isset($_POST['logout'])) {
         session_destroy();
-        header("location: login.php");
+        header("location: login.php?logout=1");
         $message[] = "logged out of system";
     }
     
