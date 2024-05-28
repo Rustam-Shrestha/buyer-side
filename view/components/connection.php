@@ -1,13 +1,19 @@
 <?php
-
+// Define database connection parameters
 $dbname = 'mysql:host=localhost;dbname=buyerside';
 $user = 'root';
 $pass = '';
-$con = new PDO($dbname, $user, $pass);
 
+// Create a PDO connection
+try {
+    $con = new PDO($dbname, $user, $pass);
+} catch (PDOException $e) {
+    echo 'Connection failed: ' . $e->getMessage();
+    exit(); // Terminate script if connection fails
+}
 
-function uniq_id()
-{
+// Function to generate unique ID
+function uniq_id() {
     $chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
     $charLength = strlen($chars);
     $randomString = "";
@@ -16,6 +22,4 @@ function uniq_id()
     }
     return $randomString;
 }
-
-
 ?>

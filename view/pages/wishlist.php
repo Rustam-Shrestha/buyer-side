@@ -200,24 +200,6 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_id'] == "") {
             </div>
         </div>
     </section>
-    <section class="wishlists">
-
-        <div class="item">
-           
-            <div class="desc">
-                <!-- name price and subtotla -->
-                <h1>this is carted fruit</h1>
-                <p><strong>Price:</strong> 240</p>
-            </div>
-            <input type="number"> <br /><br />
-            <div class="icons">
-                <a href="">cart</a>
-                <a href="">view</a>
-                <a href="">cross</a>
-            </div>
-            <br><br>
-            <a href="" class="btn">buy now</a>
-        </div>
 
 
     </section>

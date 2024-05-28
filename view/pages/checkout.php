@@ -45,8 +45,8 @@ if (isset ($_POST['place_order'])) {
             // then fetch them until null
             while ($fetch_pro = $get_product->fetch(PDO::FETCH_ASSOC)) {
                 // inserting to the orders database 
-                $insert_order = $con->prepare("INSERT INTO `orders` (`id`, `user_id`, `name`, `number`, `email`, `address`, `address_type`, `method`, `product_id`, `price`, `qty`) VALUES (?,?,?,?,?,?,?,?,?,?,?);");
-                $insert_order->execute([uniq_id(), $user_id, $name, $phone, $email, $address, $adtype, $method, $fetch_pro['id'], $fetch_pro['price'], $fetch_pro['qty']]);
+                $insert_order = $con->prepare("INSERT INTO `orders` (`id`, `user_id`, `name`, `number`, `email`, `address`, `address_type`, `method`, `product_id`, `price`, `qty`, `status`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?);");
+                $insert_order->execute([uniq_id(), $user_id, $name, $phone, $email, $address, $adtype, $method, $fetch_pro['id'], $fetch_pro['price'], $fetch_pro['qty'], "pending"]);
                 
                 header('location: orders.php');
             }

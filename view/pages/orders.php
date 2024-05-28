@@ -65,12 +65,12 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_id'] == "") {
 
                                 ?>>
                                 <!-- giving url parameter as id from order tables fron which we can generate order wrt given id -->
-                                    <a href="view_order.php?get_id=<?= $fetch_order['id']; ?>">
+                                    <!-- <a href="view_order.php?get_id=<?= $fetch_order['id']; ?>"> -->
                                         <p class="date"> <i class="bi bi-calender-fill"></i><span>
                                                 <?= $fetch_order['date']; ?>
                                             </span></p>
                                         <!-- source should be #fetch_product['image'] -->
-                                        <img src="images/samsung.jpg" alt="this is productimage" class="image">
+                                        <img src="<?= $fetch_product['image']; ?>" alt="this is productimage" class="image">
                                         <div class="row">
                                             <!-- the person who ordered this item -->
                                             <h3 class="name">

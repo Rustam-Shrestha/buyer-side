@@ -1,64 +1,64 @@
 <?php
 session_start();
 
-// initializing message array
-// setting session if set or else set empty item
+
 if (isset($_SESSION['user_id'])) {
     $user_id = $_SESSION['user_id'];
 } else {
     $user_id = "";
 }
-
-if (isset($_SESSION['user_id']) && $_SESSION['user_id'] != "") {
-    header('Location: home.php');
+// Check if user is already logged in
+if (isset($_SESSION['user_id'])) {
+    header("Location: home.php");
     exit();
 }
+
 include "../components/connection.php";
 include "../components/_header.php";
+include "../components/alert.php";
 
- include "../components/alert.php"; 
-
-// registering user
-if (isset($_POST['submit'])) {
-    // setting unique id while getting data from form
+// Handle form submission
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['yield'])) {
     $id = uniqid();
-    $name = $_POST['username'];
-    $name = filter_var($name, FILTER_SANITIZE_STRING);
-    $email = $_POST['email'];
-    $email = filter_var($email, FILTER_SANITIZE_STRING);
-    $pass = $_POST['pass'];
-    $pass = filter_var($pass, FILTER_SANITIZE_STRING);
-    $cpass = $_POST['cpass'];
-    $cpass = filter_var($cpass, FILTER_SANITIZE_STRING);
+    $name = filter_var($_POST['username'], FILTER_SANITIZE_STRING);
+    $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
+    $phone = filter_var($_POST['phone'], FILTER_SANITIZE_STRING);
+    $address = filter_var($_POST['address'], FILTER_SANITIZE_STRING);
+    $house_number = filter_var($_POST['house_number'], FILTER_SANITIZE_STRING);
+    $pass = filter_var($_POST['password'], FILTER_SANITIZE_STRING);
+    $cpass = filter_var($_POST['cpassword'], FILTER_SANITIZE_STRING);
 
-    // checking if email already exists
-    $query = "SELECT * FROM `users` WHERE email= ?";
+    // Check if email already exists
+    $query = "SELECT * FROM `users` WHERE email = ?";
     $select_user = $con->prepare($query);
     $select_user->execute([$email]);
-    $row = $select_user->fetch(PDO::FETCH_ASSOC);
-    // not inserting redundant data
-    if ($select_user->rowCount() > 0) {
-        $message[] = "Email already exists in the database";
-    } else {
-        if ($pass != $cpass) {
-            $message[] = "Passwords do not match";
-        } else {
-            $query = "INSERT INTO `users` (id, name, email, password) VALUES(?,?,?,?)";
-            $insert_user = $con->prepare($query);
-            $insert_user->execute([$id, $name, $email, $pass]);
 
-            // after inserting redirect to home.php
-            header("location: home.php");
-            $sqlQuery = "SELECT * FROM `users` where email= ? AND password = ?";
+    if ($select_user->rowCount() > 0) {
+        $warning_msg[] = "Email already exists in the database";
+    } else {
+        if ($pass !== $cpass) {
+            $warning_msg[] = "Passwords do not match";
+        } else {
+            // Hash the password
+            $hashed_pass = password_hash($pass, PASSWORD_DEFAULT);
+
+            // Insert new user
+            $query = "INSERT INTO `users` (id, name, email, phone, address, house_number, password) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            $insert_user = $con->prepare($query);
+            $insert_user->execute([$id, $name, $email, $phone, $address, $house_number, $hashed_pass]);
+
+            // Log in the user
+            $sqlQuery = "SELECT * FROM `users` WHERE email = ? AND phone = ?";
             $select_user = $con->prepare($sqlQuery);
-            $select_user->execute([$email, $pass]);
+            $select_user->execute([$email, $phone]);
             $row = $select_user->fetch(PDO::FETCH_ASSOC);
-            // log in the user by getting the details like id password
-            if ($select_user->rowCount() > 0) {
-                // setting session by giving fetched data
+
+            if ($row) {
                 $_SESSION['user_id'] = $row["id"];
                 $_SESSION['user_name'] = $row["name"];
                 $_SESSION['user_email'] = $row["email"];
+                header("Location: home.php");
+                exit();
             }
         }
     }
@@ -84,33 +84,53 @@ if (isset($_POST['submit'])) {
     <section class="signup">
         <fieldset>
             <legend>Signup for new account</legend>
-            <form action="" method="post">
-                <p>username:</p>
-                <input type="text" name="username" placeholder="Enter your name" max-length="40">
-                <p>Email address:</p>
-                <input type="text" name="email" placeholder="Enter your email" max-length="40"
-                    oninput="this.value = this.value.replace(/\s/g, '')">
-                <p>Password:</p>
-                <input type="password" name="pass" placeholder="Enter your password" max-length="40"
-                    oninput="this.value = this.value.replace(/\s/g, '')">
-                <p>Confirm Password:</p>
-                <input type="password" name="cpass" placeholder="Confirm your password" max-length="40"
-                    oninput="this.value = this.value.replace(/\s/g, '')">
-                <br>
-                <input type="submit" class="btn" name="submit">
-                <p>already have an account? <a href="login.php">login</a></p>
-            </form>
-    </section>
-    </fieldset>
+            <form action="" method="post" id="signup-form">
+                <p>Username:</p>
+                <input type="text" name="username" id="username" placeholder="Enter your name" maxlength="40" required>
+                <div id="errorname" style="color: crimson"></div>
 
+                <p>Email address:</p>
+                <input type="email" name="email" id="email" placeholder="Enter your email" maxlength="40" oninput="this.value = this.value.replace(/\s/g, '')" required>
+                <div id="erroremail" style="color: crimson"></div>
+
+                <p>Phone number:</p>
+                <input type="text" name="phone" id="phone" placeholder="Enter your phone number" maxlength="10" required>
+                <div id="errorphone" style="color: crimson"></div>
+
+                <p>Address:</p>
+                <select name="address" id="address" required>
+                    <option value="">Select your address</option>
+                    <?php
+                    $places = ["Balaju", "Sukedhara", "Kalanki", "Samakhusi", "Gongabu", "Thamel", "Baneshwor", "Koteshwor", "Maitidevi", "Lalitpur", "Bhaktapur", "Swayambhu", "Chabahil", "Maharajgunj", "Naxal"];
+                    foreach ($places as $place) {
+                        echo "<option value=\"$place\">$place</option>";
+                    }
+                    ?>
+                </select>
+
+                <p>House number:</p>
+                <input type="text" name="house_number" id="house_number" placeholder="Enter your house number" maxlength="8" required>
+
+                <p>Password:</p>
+                <input type="password" name="password" id="password" required />
+                <div id="errortext" style="color: crimson"></div>
+
+                <p>Confirm Password:</p>
+                <input type="password" name="cpassword" id="cpassword" required />
+                <div id="password-warning"></div>
+                <br>
+
+                <input type="submit" class="btn" id="submit-button" name="yield">
+                <p>Already have an account? <a href="login.php">Login</a></p>
+            </form>
+        </fieldset>
+    </section>
     <?php include "../components/_footer.php"; ?>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
     <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
     <script>
         <?php include "../../view/js/script.js"; ?>
-
     </script>
-   
 </body>
 
 </html>
