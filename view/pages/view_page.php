@@ -63,7 +63,10 @@ if (isset($_POST['add_to_cart'])) {
         $success_msg[] = 'successfully added to cart';
     }
 }
-
+if (!isset($_SESSION['user_id']) || $_SESSION['user_id'] == "") {
+        header('Location: login.php?attempt=1');
+        exit();
+    }
 ?>
 
 <!DOCTYPE html>

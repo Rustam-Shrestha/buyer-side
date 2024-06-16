@@ -1,6 +1,7 @@
 <?php
 session_start();
 
+$warning_msg = []; // Initialize warning messages
 
 if (isset($_SESSION['user_id'])) {
     $user_id = $_SESSION['user_id'];
@@ -9,13 +10,12 @@ if (isset($_SESSION['user_id'])) {
 }
 // Check if user is already logged in
 if (isset($_SESSION['user_id'])) {
-    header("Location: home.php");
+    header("Location: home.php?loggedin=true");
     exit();
 }
 
 include "../components/connection.php";
 include "../components/_header.php";
-include "../components/alert.php";
 
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['yield'])) {
@@ -45,20 +45,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['yield'])) {
             // Insert new user
             $query = "INSERT INTO `users` (id, name, email, phone, address, house_number, password) VALUES (?, ?, ?, ?, ?, ?, ?)";
             $insert_user = $con->prepare($query);
-            $insert_user->execute([$id, $name, $email, $phone, $address, $house_number, $hashed_pass]);
+            $success = $insert_user->execute([$id, $name, $email, $phone, $address, $house_number, $hashed_pass]);
 
-            // Log in the user
-            $sqlQuery = "SELECT * FROM `users` WHERE email = ? AND phone = ?";
-            $select_user = $con->prepare($sqlQuery);
-            $select_user->execute([$email, $phone]);
-            $row = $select_user->fetch(PDO::FETCH_ASSOC);
+            if ($success) {
+                // Log in the user
+                $sqlQuery = "SELECT * FROM `users` WHERE email = ? AND phone = ?";
+                $select_user = $con->prepare($sqlQuery);
+                $select_user->execute([$email, $phone]);
+                $row = $select_user->fetch(PDO::FETCH_ASSOC);
 
-            if ($row) {
-                $_SESSION['user_id'] = $row["id"];
-                $_SESSION['user_name'] = $row["name"];
-                $_SESSION['user_email'] = $row["email"];
-                header("Location: home.php");
-                exit();
+                if ($row) {
+                    $_SESSION['user_id'] = $row["id"];
+                    $_SESSION['user_name'] = $row["name"];
+                    $_SESSION['user_email'] = $row["email"];
+                    header("Location: home.php");
+                    exit();
+                }
+            } else {
+                $warning_msg[] = "Failed to insert user data";
             }
         }
     }
@@ -84,11 +88,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['yield'])) {
     <section class="signup">
         <fieldset>
             <legend>Signup for new account</legend>
+            <?php include "../components/alert.php";?>
             <form action="" method="post" id="signup-form">
+                
                 <p>Username:</p>
                 <input type="text" name="username" id="username" placeholder="Enter your name" maxlength="40" required>
                 <div id="errorname" style="color: crimson"></div>
-
+                
                 <p>Email address:</p>
                 <input type="email" name="email" id="email" placeholder="Enter your email" maxlength="40" oninput="this.value = this.value.replace(/\s/g, '')" required>
                 <div id="erroremail" style="color: crimson"></div>

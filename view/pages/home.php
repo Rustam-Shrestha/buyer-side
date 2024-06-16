@@ -32,8 +32,14 @@
    <?php
     include "../components/_header.php"; 
     ?>
-    <?php require("../components/alert.php"); ?>
     <div class="wallpaper">
+        <?php
+       if(isset($_GET['loggedin']) && $_GET['loggedin']==true){
+           $info_msg[]="Welcome, ".$_SESSION['user_name']."!";
+        }
+        
+        ?>
+            <?php require("../components/alert.php"); ?>
         <div class="carousel-container">
             <button class="carousel-btn-prev carousel-btn" onclick="prevSlide()">
                 &#8249;

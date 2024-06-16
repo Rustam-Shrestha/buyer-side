@@ -31,9 +31,8 @@ if (isset($_POST['submit'])) {
                 $_SESSION['user_name'] = $row["name"];
                 $_SESSION['user_email'] = $row["email"];
                 echo "<script>
-                        alert('Welcome back Mr./Ms. " . $_SESSION['user_name'] . "');
-                        setTimeout(function() {
-                            window.location.href = 'home.php';
+                       setTimeout(function() {
+                            window.location.href = 'home.php?loggedin=true';
                         }, 4000); // 4 seconds delay
                       </script>";
             } else {

@@ -37,7 +37,7 @@ CREATE TABLE orders (
     number VARCHAR(255),
     email VARCHAR(255),
     address VARCHAR(255),
-    address_type VARCHAR(255),
+    house_number VARCHAR(8) NOT NULL,
     method VARCHAR(255),
     product_id VARCHAR(36),
     price DECIMAL(10, 2), -- Use DECIMAL for price to handle floating-point precision
