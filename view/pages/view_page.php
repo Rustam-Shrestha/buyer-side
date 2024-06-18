@@ -18,16 +18,12 @@ if (isset($_POST['add_wishlist'])) {
     $product_id = $_POST['product_id'];
     $verify_wishlist = $con->prepare('SELECT * FROM `wishlist` WHERE user_id = ? AND product_id = ?');
     $verify_wishlist->execute([$user_id, $product_id]);
-    $cart_num = $con->prepare('SELECT * FROM `cart` WHERE user_id = ? AND product_id = ?');
-    $cart_num->execute([$user_id, $product_id]);
+    
     if ($verify_wishlist->rowCount() > 0) {
         $warning_msg[] = 'product already exists in your wishlist';
 
-    } else if ($cart_num->rowCount() > 0) {
-        $warning_msg[] = 'product already exists in your wishlist';
-
-    } else {
-        $select_price = $con->prepare("SELECT * FROM `product` WHERE id= ? LIMIT 1");
+    }  else {
+        $select_price = $con->prepare("SELECT * FROM `products` WHERE id= ? LIMIT 1");
         $select_price->execute([$product_id]);
         $fetch_price = $select_price->fetch(PDO::FETCH_ASSOC);
         $insert_wishlist = $con->prepare("INSERT INTO `wishlist` (id, user_id, product_id, price) VALUES(?,?,?,?)");
@@ -55,7 +51,7 @@ if (isset($_POST['add_to_cart'])) {
         $warning_msg[] = 'cart is already full';
 
     } else {
-        $select_price = $con->prepare("SELECT * FROM `product` WHERE id= ? LIMIT 1");
+        $select_price = $con->prepare("SELECT * FROM `products` WHERE id= ? LIMIT 1");
         $select_price->execute([$product_id]);
         $fetch_price = $select_price->fetch(PDO::FETCH_ASSOC);
         $insert_cart = $con->prepare("INSERT INTO `cart` (id, user_id, product_id, price, qty) VALUES(?,?,?,?,?)");

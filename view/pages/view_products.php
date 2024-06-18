@@ -21,12 +21,9 @@ if (isset($_POST['add_to_wishlist'])) {
     $product_id = $_POST['product_id'];
     $verify_wishlist = $con->prepare('SELECT * FROM `wishlist` WHERE user_id = ? AND product_id = ?');
     $verify_wishlist->execute([$user_id, $product_id]);
-    $cart_num = $con->prepare('SELECT * FROM `cart` WHERE user_id = ? AND product_id = ?');
-    $cart_num->execute([$user_id, $product_id]);
+
     if ($verify_wishlist->rowCount() > 0) {
         $warning_msg[] = 'product already exists in your wishlist';
-    } else if ($cart_num->rowCount() > 0) {
-        $warning_msg[] = 'product already exists in your cart';
     } else {
         $select_price = $con->prepare("SELECT * FROM `products` WHERE id= ? LIMIT 1");
         $select_price->execute([$product_id]);
@@ -43,10 +40,10 @@ if (isset($_POST['add_to_cart'])) {
     $product_id = $_POST['product_id'];
     $qty = $_POST['qty'];
     $qty = filter_var($qty, FILTER_SANITIZE_NUMBER_INT);
-    
+
     $verify_cart = $con->prepare('SELECT * FROM `cart` WHERE user_id = ? AND product_id = ?');
     $verify_cart->execute([$user_id, $product_id]);
-    
+
     $max_cart_items = $con->prepare("SELECT * FROM `cart` WHERE user_id=? ");
     $max_cart_items->execute([$user_id]);
     if ($verify_cart->rowCount() > 0) {
@@ -62,7 +59,27 @@ if (isset($_POST['add_to_cart'])) {
         $success_msg[] = 'successfully added to cart';
     }
 }
+// Get selected type from URL parameters
+$type = isset($_GET['type']) ? $_GET['type'] : 'all';
+$type_filter = "";
 
+if ($type !== 'all') {
+    $type_filter = "WHERE type = ?";
+}
+
+$query = "SELECT * FROM `products` $type_filter";
+$select_products = $con->prepare($query);
+
+if ($type !== 'all') {
+    $select_products->execute([$type]);
+} else {
+    $select_products->execute();
+}
+
+// Function to get active class for the category
+function getActiveClass($current_type, $type) {
+    return $current_type === $type ? 'active' : '';
+}
 // if (!isset($_SESSION['user_id']) || $_SESSION['user_id'] == "") {
 //     header('Location: login.php?attempt=1');
 //     exit();
@@ -81,6 +98,29 @@ if (isset($_POST['add_to_cart'])) {
     <style>
         <?php include "../../assets/css/style.css"; ?>
         <?php include "../../assets/css/products-style.css"; ?>
+        .category-box {
+            cursor: pointer;
+            padding: 10px;
+            margin: 5px;
+            border: 1px solid rgba(19, 78, 0, 0.956);
+            display: inline-block;
+        }
+
+        .category-box.active {
+            background-color: rgba(19, 78, 0, 0.956);
+            color: white;
+        }
+
+        .item {
+            margin-top: 20px;
+        }
+
+        .box {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 10px;
+            display: inline-block;
+        }
     </style>
     <title>products page</title>
 </head>
@@ -97,69 +137,56 @@ if (isset($_POST['add_to_cart'])) {
     <!-- filter container -->
     <div class="container">
 
-        <div class="category-box">All</div>
-        <div class="category-box">Berries</div>
-        <div class="category-box">Drupes</div>
-        <div class="category-box">Pomes</div>
-        <div class="category-box">Citrus Fruits</div>
-        <div class="category-box">Melons</div>
-        <div class="category-box">Dried Fruits</div>
-        <div class="category-box">Tropical Fruits</div>
-        <div class="category-box">Others</div>
+    <div class="categories">
+    <div class="category-box <?= getActiveClass('all', $type) ?>" onclick="window.location.href='?type=all';">All</div>
+    <div class="category-box <?= getActiveClass('berries', $type) ?>" onclick="window.location.href='?type=berries';">Berries</div>
+    <div class="category-box <?= getActiveClass('drupes', $type) ?>" onclick="window.location.href='?type=drupes';">Drupes</div>
+    <div class="category-box <?= getActiveClass('pomes', $type) ?>" onclick="window.location.href='?type=pomes';">Pomes</div>
+    <div class="category-box <?= getActiveClass('citrus fruits', $type) ?>" onclick="window.location.href='?type=citrus fruits';">Citrus Fruits</div>
+    <div class="category-box <?= getActiveClass('melons', $type) ?>" onclick="window.location.href='?type=melons';">Melons</div>
+    <div class="category-box <?= getActiveClass('dried fruits', $type) ?>" onclick="window.location.href='?type=dried fruits';">Dried Fruits</div>
+    <div class="category-box <?= getActiveClass('tropical fruits', $type) ?>" onclick="window.location.href='?type=tropical fruits';">Tropical Fruits</div>
+    <div class="category-box <?= getActiveClass('others', $type) ?>" onclick="window.location.href='?type=others';">Others</div>
+</div>
+
     </div>
     <section class="products">
-        <div class="item">
-            <?php
-            $select_products = $con->prepare("SELECT * FROM `products`");
-            $select_products->execute();
-            if ($select_products->rowCount() > 0) {
-                while ($fetch_products = $select_products->fetch(PDO::FETCH_ASSOC)) {
-                    ?>
-                    <form action="" method="post" class="box">
-
-                        <img src="<?= $fetch_products['image']; ?>" class='img' />
-                        <?php
-                        if (!isset($_SESSION['user_id']) || $_SESSION['user_id'] == "") {
-                            echo "<div style='background-color:rgba(19, 78, 0, 0.956); color:white'>login for more features </div>";
-                        } else {
-                            echo '<div class="buttons">
-    <!-- adding to cart after getting clicked in add -->
-    <button type="submit" name="add_to_cart"> <i class="bx bx-cart"></i></button>
-    <!-- adding to wishlist after clicking -->
-    <button type="submit" name="add_to_wishlist" value="' . $fetch_products["id"] . '"> <i class="bx bx-heart"></i></button>
-
-    <a href="view_page.php?pid=' . $fetch_products["id"] . '" class="bx bxs-show"></a>
-</div>';
-
-                        }
-                        ?>
-
-                        <h3 class="name">
-                            <?= $fetch_products['name']; ?>
-                        </h3>
-                        <input type="hidden" name="product_id" value="<?= $fetch_products['id']; ?>">
-
-                        <div class="flex">
-                            <p class="price">price:
-                                Rs.
-                                <?= $fetch_products['price']; ?>/-
-                                <input class="btn quantity" type="number" name="qty" required value="1" min="1" max="99" maxlength="2"
-                                    data-product-id="<?= $fetch_products['id']; ?>">
-                            </p>
-                        </div>
-                        <br>
-                        <br>
-                        <!-- <a name="buy" type="submit" href="checkout.php?get_id=<?= $fetch_products['id']; ?>" class="btn">buy now</a> -->
-                        <a href="#" class="btn checkout" data-product-id="<?= $fetch_products['id']; ?>">buy now</a>
-
-                    </form>
-                    <?php
-                }
-            } else {
-                echo '<p class="empty">no products added yet! </p>';
-            }
+    <div class="item">
+    <?php
+    if ($select_products->rowCount() > 0) {
+        while ($fetch_products = $select_products->fetch(PDO::FETCH_ASSOC)) {
             ?>
-        </div>
+            <form action="" method="post" class="box">
+                <img src="<?= $fetch_products['image']; ?>" class='img' />
+                <?php
+                if (!isset($_SESSION['user_id']) || $_SESSION['user_id'] == "") {
+                    echo "<div style='background-color:rgba(19, 78, 0, 0.956); color:white'>login for more features </div>";
+                } else {
+                    echo '<div class="buttons">
+                    <button type="submit" name="add_to_cart"><i class="bx bx-cart"></i></button>
+                    <button type="submit" name="add_to_wishlist" value="' . $fetch_products["id"] . '"><i class="bx bx-heart"></i></button>
+                    <a href="view_page.php?pid=' . $fetch_products["id"] . '" class="bx bxs-show"></a>
+                    </div>';
+                }
+                ?>
+                <h3 class="name"><?= $fetch_products['name']; ?></h3>
+                <input type="hidden" name="product_id" value="<?= $fetch_products['id']; ?>">
+                <div class="flex">
+                    <p class="price">price: Rs. <?= $fetch_products['price']; ?>/-
+                        <input class="btn quantity" type="number" name="qty" required value="1" min="1" max="99"
+                            maxlength="2" data-product-id="<?= $fetch_products['id']; ?>">
+                    </p>
+                </div>
+                <br><br>
+                <a href="#" class="btn checkout" data-product-id="<?= $fetch_products['id']; ?>">buy now</a>
+            </form>
+            <?php
+        }
+    } else {
+        echo '<p class="empty">no products added yet!</p>';
+    }
+    ?>
+</div>
     </section>
 
     <!-- <form action="" method="post" class="box">
@@ -183,15 +210,15 @@ if (isset($_POST['add_to_cart'])) {
 
     </section>
     <?php include "../components/_footer.php"; ?>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script> -->
     <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
     <script>
         <?php include "../../view/js/script.js"; ?>
     </script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             document.querySelectorAll('.checkout').forEach(button => {
-                button.addEventListener('click', function(event) {
+                button.addEventListener('click', function (event) {
                     event.preventDefault();
                     const productId = this.getAttribute('data-product-id');
                     const quantityInput = document.querySelector(`.quantity[data-product-id="${productId}"]`);
@@ -206,4 +233,5 @@ if (isset($_POST['add_to_cart'])) {
         });
     </script>
 </body>
+
 </html>

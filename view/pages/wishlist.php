@@ -97,38 +97,86 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_id'] == "") {
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 
     <style>
-        <?php include "../../assets/css/style.css"; ?>
-        :root {
+         <?php include "../../assets/css/style.css"; ?>
+         :root {
             --green: rgba(19, 78, 0, 0.956);
+        }
 
-            .wishlists {
-                display: flex;
-                justify-content: center;
-                align-items: center
-            }
+        .wishlists {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+        }
 
-            .item {
-                padding: 14px;
-                margin: 17pX 23px;
-                border: 2PX inset var(--green);
-                border-radius: 14px;
-                ;
-            }
+        .item {
+            padding: 14px;
+            margin: 17px 23px;
+            border: 2px inset var(--green);
+            border-radius: 14px;
+            max-width: 300px;
+            text-align: center;
+        }
 
-            .wishlists .item .wishlistimg img {
-                max-width: 240px;
-                height: auto;
-                overflow-y: none;
+        .item .wishlistimg img {
+            max-width: 240px;
+            height: auto;
+            overflow-y: none;
+        }
 
-            }
+        .accumulation {
+            line-height: 4;
+            width: 80%;
+            margin: 0 auto;
+            text-align: center;
+            font-size: 20px;
+        }
 
-            .accumulation {
-                line-height: 4;
-                width: 80%;
-                margin: 0 auto;
-                text-align: center;
-                font-size: 20px;
-            }
+        .wishlist-buttons {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .wishlist-buttons button,
+        .wishlist-buttons a {
+            margin: 5px;
+            padding: 5px 10px;
+        }
+
+        .wishlist-buttons .btn {
+            background-color: var(--green);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .wishlist-buttons .btn:hover {
+            background-color: #135c00;
+        }
+
+        .name {
+            margin-top: 10px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .flex {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .price {
+            font-size: 16px;
+        }
+
+        .empty {
+            text-align: center;
+            font-size: 18px;
+        }
     </style>
     <title>wishlists page</title>
 </head>
@@ -213,12 +261,10 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_id'] == "") {
         </div>
 
     </section>
-    <?php include "../components/_footer.php"; ?>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
     <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
-    <script>
+    <?php include "../components/_footer.php"; ?>
 
-    </script>
 </body>
 
 </html>
