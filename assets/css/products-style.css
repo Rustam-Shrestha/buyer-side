@@ -40,8 +40,10 @@
   min-width: 200px;
 }
 .item .box img {
-  width: 70%;
-  height: auto;
+  width : 200px;
+  border: 1px solid black;
+  height :200px;
+  object-fit: contain;
 }
 .item .box h3 {
   margin: 11px;

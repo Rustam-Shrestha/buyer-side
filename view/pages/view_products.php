@@ -77,7 +77,8 @@ if ($type !== 'all') {
 }
 
 // Function to get active class for the category
-function getActiveClass($current_type, $type) {
+function getActiveClass($current_type, $type)
+{
     return $current_type === $type ? 'active' : '';
 }
 // if (!isset($_SESSION['user_id']) || $_SESSION['user_id'] == "") {
@@ -112,7 +113,8 @@ function getActiveClass($current_type, $type) {
         }
 
         .item {
-            margin-top: 20px;
+            margin: 20px;
+
         }
 
         .box {
@@ -120,6 +122,22 @@ function getActiveClass($current_type, $type) {
             padding: 10px;
             margin: 10px;
             display: inline-block;
+        }
+
+        .typeof {
+            border: 3px solid rgba(19, 78, 0, 0.956);
+            border-right: 0px;
+            color: rgba(19, 78, 0, 0.956);
+            border-radius: 22px 0 0 22px;
+            padding: 8px;
+            text-align: right;
+            display: flex;
+            align-items: flex-end;
+            margin-left: auto;
+            margin-top: 16px;
+            margin-bottom: 16px;
+            margin-right: 0;
+            box-shadow: 2px 4px 11px rgba(0, 0, 0, 0.250)
         }
     </style>
     <title>products page</title>
@@ -137,56 +155,67 @@ function getActiveClass($current_type, $type) {
     <!-- filter container -->
     <div class="container">
 
-    <div class="categories">
-    <div class="category-box <?= getActiveClass('all', $type) ?>" onclick="window.location.href='?type=all';">All</div>
-    <div class="category-box <?= getActiveClass('berries', $type) ?>" onclick="window.location.href='?type=berries';">Berries</div>
-    <div class="category-box <?= getActiveClass('drupes', $type) ?>" onclick="window.location.href='?type=drupes';">Drupes</div>
-    <div class="category-box <?= getActiveClass('pomes', $type) ?>" onclick="window.location.href='?type=pomes';">Pomes</div>
-    <div class="category-box <?= getActiveClass('citrus fruits', $type) ?>" onclick="window.location.href='?type=citrus fruits';">Citrus Fruits</div>
-    <div class="category-box <?= getActiveClass('melons', $type) ?>" onclick="window.location.href='?type=melons';">Melons</div>
-    <div class="category-box <?= getActiveClass('dried fruits', $type) ?>" onclick="window.location.href='?type=dried fruits';">Dried Fruits</div>
-    <div class="category-box <?= getActiveClass('tropical fruits', $type) ?>" onclick="window.location.href='?type=tropical fruits';">Tropical Fruits</div>
-    <div class="category-box <?= getActiveClass('others', $type) ?>" onclick="window.location.href='?type=others';">Others</div>
-</div>
+        <div class="categories">
+            <div class="category-box <?= getActiveClass('all', $type) ?>" onclick="window.location.href='?type=all';">
+                All</div>
+            <div class="category-box <?= getActiveClass('berries', $type) ?>"
+                onclick="window.location.href='?type=berries';">Berries</div>
+            <div class="category-box <?= getActiveClass('drupes', $type) ?>"
+                onclick="window.location.href='?type=drupes';">Drupes</div>
+            <div class="category-box <?= getActiveClass('pomes', $type) ?>"
+                onclick="window.location.href='?type=pomes';">Pomes</div>
+            <div class="category-box <?= getActiveClass('citrus fruits', $type) ?>"
+                onclick="window.location.href='?type=citrus fruits';">Citrus Fruits</div>
+            <div class="category-box <?= getActiveClass('melons', $type) ?>"
+                onclick="window.location.href='?type=melons';">Melons</div>
+            <div class="category-box <?= getActiveClass('dried fruits', $type) ?>"
+                onclick="window.location.href='?type=dried fruits';">Dried Fruits</div>
+            <div class="category-box <?= getActiveClass('tropical fruits', $type) ?>"
+                onclick="window.location.href='?type=tropical fruits';">Tropical Fruits</div>
+            <div class="category-box <?= getActiveClass('others', $type) ?>"
+                onclick="window.location.href='?type=others';">Others</div>
+        </div>
 
     </div>
     <section class="products">
-    <div class="item">
-    <?php
-    if ($select_products->rowCount() > 0) {
-        while ($fetch_products = $select_products->fetch(PDO::FETCH_ASSOC)) {
-            ?>
-            <form action="" method="post" class="box">
-                <img src="<?= $fetch_products['image']; ?>" class='img' />
-                <?php
-                if (!isset($_SESSION['user_id']) || $_SESSION['user_id'] == "") {
-                    echo "<div style='background-color:rgba(19, 78, 0, 0.956); color:white'>login for more features </div>";
-                } else {
-                    echo '<div class="buttons">
+        <div class="item">
+            <?php
+            if ($select_products->rowCount() > 0) {
+                while ($fetch_products = $select_products->fetch(PDO::FETCH_ASSOC)) {
+                    ?>
+                    <form action="" method="post" class="box">
+                        <img src="<?= $fetch_products['image']; ?>" class='img' />
+                        <?php
+                        if (!isset($_SESSION['user_id']) || $_SESSION['user_id'] == "") {
+                            echo "<div style='background-color:rgba(19, 78, 0, 0.956); color:white'>login for more features </div>";
+                        } else {
+                            echo '<div class="buttons">
                     <button type="submit" name="add_to_cart"><i class="bx bx-cart"></i></button>
                     <button type="submit" name="add_to_wishlist" value="' . $fetch_products["id"] . '"><i class="bx bx-heart"></i></button>
+
                     <a href="view_page.php?pid=' . $fetch_products["id"] . '" class="bx bxs-show"></a>
                     </div>';
+                        }
+                        ?>
+                        <h3 class="name"><?= $fetch_products['name']; ?></h3>
+                        <strong class="typeof"><?= $fetch_products['type'] ?></strong>
+                        <input type="hidden" name="product_id" value="<?= $fetch_products['id']; ?>">
+                        <div class="flex">
+                            <p class="price">price: Rs. <?= $fetch_products['price']; ?>/-
+                                <input class="btn quantity" type="number" name="qty" required value="1" min="1" max="99"
+                                    maxlength="2" data-product-id="<?= $fetch_products['id']; ?>">
+                            </p>
+                        </div>
+                        <br><br>
+                        <a href="#" class="btn checkout" data-product-id="<?= $fetch_products['id']; ?>">buy now</a>
+                    </form>
+                    <?php
                 }
-                ?>
-                <h3 class="name"><?= $fetch_products['name']; ?></h3>
-                <input type="hidden" name="product_id" value="<?= $fetch_products['id']; ?>">
-                <div class="flex">
-                    <p class="price">price: Rs. <?= $fetch_products['price']; ?>/-
-                        <input class="btn quantity" type="number" name="qty" required value="1" min="1" max="99"
-                            maxlength="2" data-product-id="<?= $fetch_products['id']; ?>">
-                    </p>
-                </div>
-                <br><br>
-                <a href="#" class="btn checkout" data-product-id="<?= $fetch_products['id']; ?>">buy now</a>
-            </form>
-            <?php
-        }
-    } else {
-        echo '<p class="empty">no products added yet!</p>';
-    }
-    ?>
-</div>
+            } else {
+                echo '<p class="empty">no products added yet!</p>';
+            }
+            ?>
+        </div>
     </section>
 
     <!-- <form action="" method="post" class="box">

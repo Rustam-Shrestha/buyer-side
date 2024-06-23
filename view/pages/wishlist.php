@@ -97,29 +97,38 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_id'] == "") {
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 
     <style>
-         <?php include "../../assets/css/style.css"; ?>
-         :root {
+        <?php include "../../assets/css/style.css"; ?>
+        :root {
             --green: rgba(19, 78, 0, 0.956);
         }
 
         .wishlists {
             display: flex;
-            justify-content: center;
+            justify-content: flex-start;
             align-items: center;
             flex-wrap: wrap;
+        }
+        .box-container{
+            display:flex;   
+            flex-wrap:wrap;
+            flex-direction:flex-start;
+            justify-content:center;
         }
 
         .item {
             padding: 14px;
-            margin: 17px 23px;
+            margin: 8px 12px;
             border: 2px inset var(--green);
             border-radius: 14px;
-            max-width: 300px;
+            max-width: 260px;
             text-align: center;
+            height: 6%00px;  
+            /* display: flex; */
         }
 
         .item .wishlistimg img {
             max-width: 240px;
+            max-height:240px;   
             height: auto;
             overflow-y: none;
         }
@@ -134,7 +143,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_id'] == "") {
 
         .wishlist-buttons {
             display: flex;
-            flex-direction: column;
+            flex-direction: row;
             align-items: center;
             margin-top: 10px;
         }
@@ -182,89 +191,70 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_id'] == "") {
 </head>
 
 <body>
-    <?php
-    include "../components/_header.php";
-    ?>
+    <?php include "../components/_header.php"; ?>
 
     <section class="sign-board">
         <div class="about-content">
-
-            <h1>items on wishlists</h1>
-
+            <h1>Items on Wishlists</h1>
         </div>
     </section>
-    <section class="wishlists">
-        <h1 class="title">Products added in wishlist</h1>
-        <div class="box-container">
-        <div class="item">
-                <?php
-                $grand_total = 0;
-                $select_wishlist = $con->prepare("SELECT * FROM `wishlist` WHERE user_id= ?");
-                $select_wishlist->execute([$user_id]);
-                if ($select_wishlist->rowCount()) {
-                    while ($fetch_wishlist = $select_wishlist->fetch(PDO::FETCH_ASSOC)) {
 
-                        $select_products = $con->prepare("SELECT * FROM `products` WHERE id= ?");
-                        $select_products->execute([$fetch_wishlist["product_id"]]);
-                        if ($select_products->rowCount() > 0) {
-                            $fetch_products = $select_products->fetch(PDO::FETCH_ASSOC);
-                            ?>
+    <center><h1 class="title">Products Added in Wishlist</h1></center>
+    <section class="wishlists">
+        <div class="box-container">
+            <?php
+            $grand_total = 0;
+            $select_wishlist = $con->prepare("SELECT * FROM `wishlist` WHERE user_id= ?");
+            $select_wishlist->execute([$user_id]);
+            if ($select_wishlist->rowCount() > 0) {
+                while ($fetch_wishlist = $select_wishlist->fetch(PDO::FETCH_ASSOC)) {
+                    $select_products = $con->prepare("SELECT * FROM `products` WHERE id= ?");
+                    $select_products->execute([$fetch_wishlist["product_id"]]);
+                    if ($select_products->rowCount() > 0) {
+                        $fetch_products = $select_products->fetch(PDO::FETCH_ASSOC);
+            ?>
+                        <div class="item">
                             <form action="" method="post" class="box">
                                 <input type="hidden" name="wishlist_id" value="<?= $fetch_wishlist['id'] ?>">
-                                <!-- use image/<= $fetch_products['image']; ?> instead -->
                                 <div class="wishlistimg">
-                                    <img src="<?=$fetch_products['image']?>" alt="lost img" class="img">
+                                    <img src="<?= $fetch_products['image'] ?>" alt="Product Image" class="img">
                                 </div>
                                 <div class="wishlist-buttons">
-                                    <button type="submit" name="add_to_cart" class="btn"> <i class="bx bx-cart"></i></button>
-                                    <a href="view_page.php?pid=<?php echo $fetch_products['id']; ?>" class="bx bxs-show btn"></a>
-                                    <button type="submit" name="delete_item" class="btn" onclick="return confirm('delete this item?')"><i
-                                            class="bx bx-x"></i></button>
-                                    <h3 class="name">
-                                        <?= $fetch_products['name']; ?>
-                                    </h3>
-                                    <input type="hidden" name="product_id" value="<?= $fetch_products['id'] ?>">
-                                    <div class="flex">
-                                        <p class="price">price: Rs.
-                                            <?= $fetch_products['price'] ?>/-
-                                        </p>
-                                        <br>
-                                        <br>
-                                        <a href="checkout.php?get_id=<?= $fetch_products['id']; ?>" class="btn"
-                                            style="font-size:13px; ">buy now</a>
-                                    </div>
-
+                                    <button type="submit" name="add_to_cart" class="btn"><i class="bx bx-cart"></i></button>
+                                    <a href="view_page.php?pid=<?= $fetch_products['id']; ?>" class="bx bxs-show btn"></a>
+                                    <button type="submit" name="delete_item" class="btn" onclick="return confirm('Delete this item?')"><i class="bx bx-x"></i></button>
+                                </div>
+                                <h3 class="name"><?= $fetch_products['name']; ?></h3>
+                                <input type="hidden" name="product_id" value="<?= $fetch_products['id'] ?>">
+                                <div class="flex">
+                                    <p class="price">Price: Rs. <?= $fetch_products['price'] ?>/-</p>
+                                    <a href="checkout.php?get_id=<?= $fetch_products['id']; ?>" class="btn" style="font-size:13px;">Buy Now</a>
                                 </div>
                             </form>
-
-                            <?php
-                            $grand_total += $fetch_wishlist['price'];
-                        }
+                        </div>
+            <?php
+                        $grand_total += $fetch_products['price'];
                     }
-                } else {
-                    echo "<p class='empty'>no products added yet </p>";
                 }
-                ?>
-            </div>
+            } else {
+                echo "<p class='empty'>No products added yet.</p>";
+            }
+            ?>
         </div>
-    </section>
-
-
     </section>
 
     <section class="accumulation">
-        <strong>Total Amount Payable: </strong><span>699</span>
+        <strong>Total Amount Payable: </strong><span>Rs. <?= $grand_total ?></span>
         <div class="buttons">
-
-            <a href="" class="btn">clear cart</a>
-            <a href="" class="btn">proceed to checkout from cart</a>
+            <a href="clear_cart.php" class="btn">Clear Cart</a>
+            <a href="checkout_cart.php" class="btn">Proceed to Checkout from Cart</a>
         </div>
-
     </section>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
     <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
     <?php include "../components/_footer.php"; ?>
-
 </body>
+
 
 </html>

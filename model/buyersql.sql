@@ -1,4 +1,4 @@
-CREATE DATABASE buyerside;
+CREATE DATABASE falodhyam_buyer;
 USE buyerside;
 
 CREATE TABLE users (
@@ -28,6 +28,7 @@ CREATE TABLE cart (
     qty INT,
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (product_id) REFERENCES products(id)
+    on delete cascade
 );
 
 CREATE TABLE orders (
